@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 30 64 175;   /* blue-700 */
+    --secondary: 59 130 246; /* blue-500 */
+    --accent: 37 99 235;    /* blue-600 */
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-display;
+  }
+}
+
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--primary)) 0%,
+    rgb(var(--secondary)) 100%
+  );
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Custom shadows */
+.shadow-custom {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom card styles */
+.card {
+  @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl;
+}
+
+/* Button styles */
+.btn {
+  @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-blue-700 text-white hover:bg-blue-800 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-blue-500 text-white hover:bg-blue-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+}
+
+.btn-accent {
+  @apply bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+}
+
+/* Form styles */
+.input {
+  @apply w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white shadow-sm;
+}
+
+/* Container styles */
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Custom gradients */
+.gradient-primary {
+  @apply bg-gradient-to-r from-blue-700 to-blue-500;
+}
+
+.gradient-secondary {
+  @apply bg-gradient-to-r from-blue-500 to-blue-400;
+}
+
+/* Custom section styles */
+.section-padding {
+  @apply py-16 md:py-24;
+}
+
+/* Custom typography */
+.heading-primary {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold text-blue-900;
+}
+
+.heading-secondary {
+  @apply text-3xl md:text-4xl font-bold text-blue-900;
+}
+
+.text-body {
+  @apply text-gray-600 leading-relaxed;
+}
+
+/* Custom list styles */
+.feature-list {
+  @apply space-y-4;
+}
+
+.feature-list-item {
+  @apply flex items-center space-x-3 text-gray-700;
+}
+
+/* Custom border styles */
+.border-gradient {
+  border-image: linear-gradient(to right, rgb(var(--primary)), rgb(var(--secondary))) 1;
+}
