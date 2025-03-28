@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { NotificationProvider } from './context/NotificationContext'
 import Navbar from './components/Navbar'
 import DashboardLayout from './components/DashboardLayout'
 import Home from './pages/Home'
@@ -26,29 +27,31 @@ function App() {
   const isDashboardRoute = (pathname) => pathname.startsWith('/dashboard');
 
   return (
-    <div className="min-h-screen">
-      {!isDashboardRoute(window.location.pathname) && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/invest" element={<Invest />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/success-stories" element={<SuccessStories />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-        <Route path="/dashboard/investments" element={<DashboardLayout><Investments /></DashboardLayout>} />
-        <Route path="/dashboard/wallet" element={<DashboardLayout><Wallet /></DashboardLayout>} />
-        <Route path="/dashboard/transactions" element={<DashboardLayout><Transactions /></DashboardLayout>} />
-        <Route path="/dashboard/opportunities" element={<DashboardLayout><Opportunities /></DashboardLayout>} />
-        <Route path="/dashboard/documents" element={<DashboardLayout><Documents /></DashboardLayout>} />
-        <Route path="/dashboard/analytics" element={<DashboardLayout><Analytics /></DashboardLayout>} />
-        <Route path="/dashboard/apply" element={<DashboardLayout><ApplyLoan /></DashboardLayout>} />
-        <Route path="/dashboard/notifications" element={<DashboardLayout><Notifications /></DashboardLayout>} />
-        <Route path="/dashboard/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
-        <Route path="/dashboard/help" element={<DashboardLayout><Help /></DashboardLayout>} />
-      </Routes>
-    </div>
+    <NotificationProvider>
+      <div className="min-h-screen">
+        {!isDashboardRoute(window.location.pathname) && <Navbar />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/invest" element={<Invest />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/success-stories" element={<SuccessStories />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+          <Route path="/dashboard/investments" element={<DashboardLayout><Investments /></DashboardLayout>} />
+          <Route path="/dashboard/wallet" element={<DashboardLayout><Wallet /></DashboardLayout>} />
+          <Route path="/dashboard/transactions" element={<DashboardLayout><Transactions /></DashboardLayout>} />
+          <Route path="/dashboard/opportunities" element={<DashboardLayout><Opportunities /></DashboardLayout>} />
+          <Route path="/dashboard/documents" element={<DashboardLayout><Documents /></DashboardLayout>} />
+          <Route path="/dashboard/analytics" element={<DashboardLayout><Analytics /></DashboardLayout>} />
+          <Route path="/dashboard/apply" element={<DashboardLayout><ApplyLoan /></DashboardLayout>} />
+          <Route path="/dashboard/notifications" element={<DashboardLayout><Notifications /></DashboardLayout>} />
+          <Route path="/dashboard/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
+          <Route path="/dashboard/help" element={<DashboardLayout><Help /></DashboardLayout>} />
+        </Routes>
+      </div>
+    </NotificationProvider>
   )
 }
 
