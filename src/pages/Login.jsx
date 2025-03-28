@@ -10,13 +10,34 @@ const Login = () => {
     password: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement actual login logic
-    console.log('Login attempt:', formData);
-    // For now, just redirect to dashboard
-    navigate('/dashboard');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log('Login successful:', data);
+        localStorage.setItem('token', data.token); // Store token in localStorage
+        navigate('/dashboard'); // Redirect to dashboard
+      } else {
+        console.error('Login failed:', data.message);
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('Something went wrong. Please try again.');
+    }
   };
+  
 
   const handleChange = (e) => {
     setFormData({

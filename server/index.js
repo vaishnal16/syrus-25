@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
@@ -12,7 +13,15 @@ connectDB();
 // Create Express App
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Default route

@@ -1,22 +1,71 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios'; // Make sure to import axios
 import { FaEnvelope, FaLock, FaUser, FaPhone } from 'react-icons/fa';
 
 const Register = () => {
+  const navigate = useNavigate(); // Add navigation
+  const [error, setError] = useState(''); // Add error state
+  const [success, setSuccess] = useState(''); // Add success state
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    phone: '',
+    phoneNumber: '', // Changed from 'phone' to match backend
     password: '',
     confirmPassword: '',
-    accountType: 'borrower',
+    accountType: 'Personal', // Changed to match backend enum
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Registration attempt:', formData);
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
+
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    // Prepare data for backend (remove confirmPassword)
+    const submitData = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      password: formData.password,
+      accountType: formData.accountType
+    };
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/signup', submitData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Registration successful:', response.data);
+      setSuccess('Registration successful!');
+      
+      // Reset form
+      setFormData({
+        fullName: '',
+        email: '',
+        phoneNumber: '',
+        password: '',
+        confirmPassword: '',
+        accountType: 'Personal',
+      });
+
+      // Optional: Redirect to login or dashboard
+      navigate('/login');
+    } catch (err) {
+      console.error('Error during registration:', err);
+      setError(
+        err.response?.data?.message || 
+        'Something went wrong during registration.'
+      );
+    }
   };
 
   const handleChange = (e) => {
@@ -44,6 +93,20 @@ const Register = () => {
           </Link>
         </p>
       </motion.div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="text-center text-red-500 mt-4">
+          {error}
+        </div>
+      )}
+
+      {/* Success Message */}
+      {success && (
+        <div className="text-center text-green-500 mt-4">
+          {success}
+        </div>
+      )}
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -97,7 +160,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
                 Phone Number
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
@@ -105,13 +168,13 @@ const Register = () => {
                   <FaPhone className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="phone"
-                  name="phone"
+                  id="phoneNumber"
+                  name="phoneNumber"
                   type="tel"
                   required
                   className="input pl-10"
                   placeholder="+1 (555) 000-0000"
-                  value={formData.phone}
+                  value={formData.phoneNumber}
                   onChange={handleChange}
                 />
               </div>
@@ -128,8 +191,8 @@ const Register = () => {
                 value={formData.accountType}
                 onChange={handleChange}
               >
-                <option value="borrower">Borrower</option>
-                <option value="investor">Investor</option>
+                <option value="Personal">Investor</option>
+                <option value="Business">Borrower</option>
               </select>
             </div>
 
