@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const bodyParser = require("body-parser");
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
+const businessLoanRoutes = require('./routes/businessLoanRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +25,7 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(bodyParser.json());
 
 // Default route
 app.get('/', (req, res) => {
@@ -34,6 +37,8 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api', authRoutes);
+
+app.use("/api", businessLoanRoutes);
 
 // Handle undefined routes
 app.all('*', (req, res) => {
