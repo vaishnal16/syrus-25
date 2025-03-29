@@ -38,7 +38,7 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/signup', submitData, {
+      const response = await axios.post('https://microfund-backend.onrender.com/api/signup', submitData, {
         headers: {
           'Content-Type': 'application/json',
         },

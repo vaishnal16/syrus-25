@@ -22,6 +22,7 @@ import Notifications from './pages/dashboard/Notifications'
 import Settings from './pages/dashboard/Settings'
 import Help from './pages/dashboard/Help'
 import ApplyLoan from './pages/dashboard/ApplyLoan'
+import AIsupport from './pages/AIsupport'
 
 function App() {
   const isDashboardRoute = (pathname) => pathname.startsWith('/dashboard');
@@ -46,6 +47,7 @@ function App() {
           <Route path="/dashboard/documents" element={<DashboardLayout><Documents /></DashboardLayout>} />
           <Route path="/dashboard/analytics" element={<DashboardLayout><Analytics /></DashboardLayout>} />
           <Route path="/dashboard/apply" element={<DashboardLayout><ApplyLoan /></DashboardLayout>} />
+          <Route path="/dashboard/ai-support" element={<DashboardLayout><AIsupport /></DashboardLayout>} />
           <Route path="/dashboard/notifications" element={<DashboardLayout><Notifications /></DashboardLayout>} />
           <Route path="/dashboard/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
           <Route path="/dashboard/help" element={<DashboardLayout><Help /></DashboardLayout>} />

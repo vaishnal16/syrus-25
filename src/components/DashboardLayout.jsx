@@ -45,6 +45,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/dashboard/documents', icon: FaFileAlt, label: 'Documents' },
     { path: '/dashboard/analytics', icon: FaChartBar, label: 'Analytics' },
     { path: '/dashboard/notifications', icon: FaBell, label: 'Notifications' },
+    { path: '/dashboard/ai-support', icon: FaBell, label: 'ai-support' },
   ];
 
   return (

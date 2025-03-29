@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaSolarPanel, FaWind, FaRecycle, FaLeaf, 
   FaFilter, FaSearch, FaTimes, FaDollarSign, 
-  FaHandHoldingHeart, FaCoins, FaMoneyBillWave 
+  FaHandHoldingHeart, FaCoins, FaMoneyBillWave,
+  FaLightbulb 
 } from 'react-icons/fa';
 import { useNotifications } from '../../context/NotificationContext';
+import { getInvestmentSuggestions } from '../../services/SuggestionService';
 
 const PaymentModal = ({ opportunity, onClose }) => {
   const [paymentType, setPaymentType] = useState('invest');
@@ -273,6 +275,217 @@ const PaymentModal = ({ opportunity, onClose }) => {
   );
 };
 
+const SuggestionModal = ({ opportunities, onClose }) => {
+  const [investmentAmount, setInvestmentAmount] = useState('');
+  const [expectedReturns, setExpectedReturns] = useState('');
+  const [riskLevel, setRiskLevel] = useState('medium');
+  const [suggestion, setSuggestion] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const getSuggestion = async () => {
+    setLoading(true);
+    try {
+      const projectsInfo = opportunities.map(opp => ({
+        title: opp.title,
+        returns: opp.returns,
+        risk: opp.risk,
+        amount: opp.amount,
+        sector: opp.sector,
+        description: opp.description
+      }));
+
+      const preferences = {
+        investmentAmount,
+        expectedReturns,
+        riskLevel
+      };
+
+      const suggestionData = await getInvestmentSuggestions(projectsInfo, preferences);
+      setSuggestion(suggestionData);
+    } catch (error) {
+      console.error('Error getting suggestions:', error);
+      setSuggestion({
+        topRecommendation: {
+          projectTitle: "Error",
+          matchScore: "N/A",
+          reasons: ["Unable to get suggestions at this time"],
+          riskAnalysis: "Please try again later",
+          returnPotential: "Please try again later"
+        },
+        alternativeOptions: [],
+        investmentStrategy: "Unable to generate strategy at this time",
+        additionalNotes: error.message || "An error occurred while getting suggestions"
+      });
+    }
+    setLoading(false);
+  };
+
+  const renderSuggestion = () => {
+    if (!suggestion) return null;
+
+    return (
+      <div className="space-y-6">
+        {/* Top Recommendation */}
+        <div className="bg-blue-50 rounded-lg p-6 border border-blue-100">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-blue-900">Top Recommendation</h3>
+            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+              {suggestion.topRecommendation.matchScore} Match
+            </span>
+          </div>
+          <h4 className="text-lg font-semibold text-blue-800 mb-3">
+            {suggestion.topRecommendation.projectTitle}
+          </h4>
+          
+          <div className="space-y-4">
+            <div>
+              <h5 className="font-medium text-blue-900 mb-2">Why This Project?</h5>
+              <ul className="list-disc list-inside space-y-1 text-blue-800">
+                {suggestion.topRecommendation.reasons.map((reason, index) => (
+                  <li key={index}>{reason}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg p-3">
+                <h5 className="font-medium text-blue-900 mb-1">Risk Analysis</h5>
+                <p className="text-blue-800">{suggestion.topRecommendation.riskAnalysis}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3">
+                <h5 className="font-medium text-blue-900 mb-1">Return Potential</h5>
+                <p className="text-blue-800">{suggestion.topRecommendation.returnPotential}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Alternative Options */}
+        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Alternative Options</h3>
+          <div className="grid gap-4">
+            {suggestion.alternativeOptions.map((option, index) => (
+              <div key={index} className="bg-white rounded-lg p-4 border border-gray-100">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900">{option.projectTitle}</h4>
+                  <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-sm">
+                    {option.matchScore} Match
+                  </span>
+                </div>
+                <p className="text-gray-600">{option.keyBenefit}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Investment Strategy */}
+        <div className="bg-green-50 rounded-lg p-6 border border-green-100">
+          <h3 className="text-lg font-bold text-green-900 mb-2">Recommended Strategy</h3>
+          <p className="text-green-800">{suggestion.investmentStrategy}</p>
+          
+          {suggestion.additionalNotes && (
+            <div className="mt-4 pt-4 border-t border-green-200">
+              <h4 className="font-medium text-green-900 mb-1">Additional Considerations</h4>
+              <p className="text-green-800">{suggestion.additionalNotes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        className="bg-white rounded-xl max-w-2xl w-full p-6 relative my-8 max-h-[90vh] overflow-y-auto"
+      >
+        <button 
+          onClick={onClose} 
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+        >
+          <FaTimes className="w-6 h-6" />
+        </button>
+
+        <div className="mb-6">
+          <div className="flex items-center mb-4">
+            <FaLightbulb className="w-8 h-8 text-yellow-500 mr-3" />
+            <h2 className="text-2xl font-bold">Get Investment Suggestions</h2>
+          </div>
+          <p className="text-gray-600">
+            Tell us your investment preferences and we'll suggest the best projects for you.
+          </p>
+        </div>
+
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Investment Amount ($)
+            </label>
+            <input
+              type="number"
+              value={investmentAmount}
+              onChange={(e) => setInvestmentAmount(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2"
+              placeholder="Enter amount"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Expected Returns (% APR)
+            </label>
+            <input
+              type="number"
+              value={expectedReturns}
+              onChange={(e) => setExpectedReturns(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2"
+              placeholder="Enter expected returns"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Risk Tolerance
+            </label>
+            <select
+              value={riskLevel}
+              onChange={(e) => setRiskLevel(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2"
+            >
+              <option value="low">Low Risk</option>
+              <option value="medium">Medium Risk</option>
+              <option value="high">High Risk</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onClick={getSuggestion}
+          disabled={loading || !investmentAmount || !expectedReturns}
+          className={`w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors mb-6 ${
+            (loading || !investmentAmount || !expectedReturns) ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          {loading ? 'Getting Suggestions...' : 'Get Suggestions'}
+        </button>
+
+        {suggestion && (
+          <div className="mt-6">
+            {renderSuggestion()}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const OpportunityCard = ({ 
   title, 
   description, 
@@ -349,6 +562,7 @@ const Opportunities = () => {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [investments, setInvestments] = useState([]);
   const [projectProgress, setProjectProgress] = useState({});
   const { addNotification, notifications } = useNotifications();
@@ -549,6 +763,13 @@ const Opportunities = () => {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Investment Opportunities</h1>
             <p className="text-gray-600">Discover and invest in sustainable projects</p>
           </div>
+          <button
+            onClick={() => setShowSuggestions(true)}
+            className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+          >
+            <FaLightbulb className="mr-2" />
+            Get Suggestions
+          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -598,6 +819,12 @@ const Opportunities = () => {
                 onInvest: (paymentDetails) => handleInvestment(selectedOpportunity.id, paymentDetails)
               }}
               onClose={() => setSelectedOpportunity(null)}
+            />
+          )}
+          {showSuggestions && (
+            <SuggestionModal
+              opportunities={opportunities}
+              onClose={() => setShowSuggestions(false)}
             />
           )}
         </AnimatePresence>
