@@ -155,9 +155,9 @@ const Home = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-blue-500 rounded-full opacity-20 blur-3xl"></div>
                 <img
-                  src="https://illustrations.popsy.co/white/creative-team.svg"
+                  src="public/fundingimage.jpeg"
                   alt="Sustainable Finance"
-                  className="relative z-10 w-full max-w-lg mx-auto animate-float"
+                  className="relative z-10 w-full max-w-lg mx-auto animate-float rounded-2xl"
                 />
               </div>
             </motion.div>

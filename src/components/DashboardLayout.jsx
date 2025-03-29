@@ -16,6 +16,7 @@ import {
   FaQuestionCircle,
   FaHandHoldingHeart,
 } from 'react-icons/fa';
+import {BsRobot} from 'react-icons/bs';
 
 const SidebarLink = ({ to, icon: Icon, children, isActive }) => (
   <Link
@@ -45,7 +46,8 @@ const DashboardLayout = ({ children }) => {
     { path: '/dashboard/documents', icon: FaFileAlt, label: 'Documents' },
     { path: '/dashboard/analytics', icon: FaChartBar, label: 'Analytics' },
     { path: '/dashboard/notifications', icon: FaBell, label: 'Notifications' },
-    { path: '/dashboard/ai-support', icon: FaBell, label: 'ai-support' },
+    { path: '/dashboard/vapi-apply', icon: FaHandHoldingHeart , label: 'Vapi Apply' },
+    { path: '/dashboard/ai-support', icon: BsRobot, label: 'AI-support' },
   ];
 
   return (
